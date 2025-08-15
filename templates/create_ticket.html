@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Support Ticket{% endblock %}
+
+{% block content %}
+    <h1>Create a New Support Ticket</h1>
+    <form method="post">
+        <label for="problem_description">Problem Description</label>
+        <textarea name="problem_description" id="problem_description" rows="5" required></textarea>
+
+        <label for="priority">Priority</label>
+        <select name="priority" id="priority" required>
+            <option value="Normal">Normal</option>
+            <option value="Urgent">Urgent</option>
+            <option value="Super Urgent">Super Urgent</option>
+        </select>
+
+        <label for="expected_resolution_datetime">Expected Resolution Date and Time</label>
+        <input type="datetime-local" name="expected_resolution_datetime" id="expected_resolution_datetime" required>
+
+        <input type="submit" value="Create Ticket">
+    </form>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin - {{ super() }}{% endblock %}
+
+{% block content %}
+    <style>
+        .admin-nav {
+            background-color: #555;
+            padding: 0.5rem 1rem;
+            margin-bottom: 1rem;
+        }
+        .admin-nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem;
+        }
+        .admin-nav a:hover {
+            background-color: #777;
+        }
+    </style>
+    <nav class="admin-nav">
+        <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('reports') }}">Reports</a>
+    </nav>
+    <hr>
+    {% block admin_content %}{% endblock %}
+{% endblock %}

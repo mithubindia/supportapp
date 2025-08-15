@@ -1,0 +1,20 @@
+{% extends 'admin/base.html' %}
+
+{% block admin_content %}
+    <h1>Assign Ticket #{{ ticket.id }}</h1>
+    <p><strong>Requester:</strong> {{ ticket.requester.email }}</p>
+    <p><strong>Problem:</strong> {{ ticket.problem_description }}</p>
+    <hr>
+    <form method="post">
+        <label for="assignee_id">Assign to:</label>
+        <select name="assignee_id" id="assignee_id">
+            <option value="">-- Select Staff --</option>
+            {% for user in staff_users %}
+                <option value="{{ user.id }}" {% if ticket.assigned_to_id == user.id %}selected{% endif %}>
+                    {{ user.email }}
+                </option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Assign Ticket">
+    </form>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Ticket #{{ ticket.id }}{% endblock %}
+
+{% block content %}
+    <h1>Ticket #{{ ticket.id }} - <span class="status-{{ ticket.status.lower() }}">{{ ticket.status }}</span></h1>
+
+    <div class="ticket-meta">
+        <p><strong>Requester:</strong> {{ ticket.requester.email }}</p>
+        <p><strong>Priority:</strong> {{ ticket.priority }}</p>
+        <p><strong>Created:</strong> {{ ticket.created_at.strftime('%d/%m/%y %H:%M') }}</p>
+        <p><strong>Assigned To:</strong> {{ ticket.assignee.email if ticket.assignee else 'Not yet assigned' }}</p>
+    </div>
+
+    <hr>
+
+    <h3>Problem Description</h3>
+    <p class="problem-description">{{ ticket.problem_description }}</p>
+
+    <hr>
+
+    <h3>History &amp; Comments</h3>
+    <div class="ticket-history">
+        {% for action in actions %}
+            <div class="history-item">
+                <p class="action-meta">
+                    <strong>{{ action.author.email }}</strong>
+                    <small>({{ action.created_at.strftime('%d/%m/%y %H:%M') }})</small>
+                </p>
+                <p class="action-text">{{ action.action_text | safe }}</p>
+            </div>
+        {% else %}
+            <p>No actions have been logged for this ticket yet.</p>
+        {% endfor %}
+    </div>
+
+    {# Form for the assignee to add a new action #}
+    {% if g.user and g.user.id == ticket.assigned_to_id %}
+        <hr>
+        <h3>Add an Update or Action</h3>
+        <form method="post" class="action-form">
+            <label for="action_text">Action/Comment:</label>
+            <textarea name="action_text" id="action_text" rows="4" required></textarea>
+
+            <label for="status">Update Status (Optional):</label>
+            <select name="status" id="status">
+                <option value="">-- Do Not Change Status --</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+                <option value="Closed">Closed</option>
+            </select>
+
+            <input type="submit" value="Add Update">
+        </form>
+    {% endif %}
+
+{% endblock %}
