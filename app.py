@@ -212,7 +212,9 @@ def generate_ticket_number(length=12):
 @app.route('/create_ticket', methods=('GET', 'POST'))
 @login_required
 def create_ticket():
+    print("create_ticket route called")
     if request.method == 'POST':
+        print("request.method == 'POST'")
         problem_description = request.form['problem_description']
         priority = request.form['priority']
         expected_resolution_datetime_str = request.form['expected_resolution_datetime']
@@ -410,7 +412,7 @@ def assign_ticket(ticket_id):
     # Allow assigning to admins and agents
     agent_role = Role.query.filter_by(name='agent').first()
     admin_role = Role.query.filter_by(name='admin').first()
-    staff_users = User.query.filter(User.role.in_([agent_role, admin_role])).all()
+    staff_users = User.query.filter(User.role_id.in_([agent_role.id, admin_role.id])).all()
 
     if request.method == 'POST':
         assignee_id = request.form.get('assignee_id')
