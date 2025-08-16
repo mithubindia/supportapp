@@ -3,4 +3,3 @@ Flask-SQLAlchemy
 Flask-Mail
 pandas
 openpyxl
-psycopg2-binary

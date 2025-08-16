@@ -11,12 +11,9 @@ import pandas as pd
 from io import BytesIO
 
 app = Flask(__name__)
-# Database configuration
-db_user = os.environ.get('POSTGRES_USER')
-db_password = os.environ.get('POSTGRES_PASSWORD')
-db_name = os.environ.get('POSTGRES_DB')
-db_host = 'db'  # This is the service name in docker-compose.yml
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{db_user}:{db_password}@{db_host}/{db_name}'
+# Using SQLite for portability in this environment.
+# The original request for PostgreSQL can be re-enabled by changing this URI.
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///support.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'a-secret-key-that-you-should-change' # This will be used for session management
 app.config['UPLOAD_FOLDER'] = 'uploads'
