@@ -21,6 +21,8 @@
     <nav class="admin-nav">
         <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
         <a href="{{ url_for('reports') }}">Reports</a>
+        <a href="{{ url_for('smtp_settings') }}">SMTP Settings</a>
+        <a href="{{ url_for('manage_agents') }}">Manage Agents</a>
     </nav>
     <hr>
     {% block admin_content %}{% endblock %}

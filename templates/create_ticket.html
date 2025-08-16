@@ -4,9 +4,31 @@
 
 {% block content %}
     <h1>Create a New Support Ticket</h1>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         <label for="problem_description">Problem Description</label>
         <textarea name="problem_description" id="problem_description" rows="5" required></textarea>
+
+        <label for="issue_details">Issue related details [ Like Make/ Model ]:</label>
+        <input type="text" name="issue_details" id="issue_details">
+
+        <label for="issue_type">Whether Software Issue or Hardware issue is suspected :</label>
+        <select name="issue_type" id="issue_type">
+            <option value="Software">Software</option>
+            <option value="Hardware">Hardware</option>
+            <option value="Both">Both</option>
+        </select>
+
+        <label for="organization_name">Name of the organisation</label>
+        <input type="text" name="organization_name" id="organization_name">
+
+        <label for="address">Address</label>
+        <textarea name="address" id="address" rows="3"></textarea>
+
+        <label for="mobile_number">Mobile Number</label>
+        <input type="text" name="mobile_number" id="mobile_number">
+
+        <label for="file_upload">Upload File [ For attaching screenshot or log files -- limit 2 mb max ]</label>
+        <input type="file" name="file_upload" id="file_upload">
 
         <label for="priority">Priority</label>
         <select name="priority" id="priority" required>

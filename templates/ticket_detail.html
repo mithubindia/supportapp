@@ -35,7 +35,7 @@
     </div>
 
     {# Form for the assignee to add a new action #}
-    {% if g.user and g.user.id == ticket.assigned_to_id %}
+    {% if g.user and (g.user.id == ticket.assigned_to_id or g.user.role.name == 'admin') %}
         <hr>
         <h3>Add an Update or Action</h3>
         <form method="post" class="action-form">
@@ -45,9 +45,17 @@
             <label for="status">Update Status (Optional):</label>
             <select name="status" id="status">
                 <option value="">-- Do Not Change Status --</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Resolved">Resolved</option>
-                <option value="Closed">Closed</option>
+                {% if g.user.role.name == 'agent' %}
+                    <option value="Ticket Accepted">Ticket Accepted</option>
+                    <option value="Working On">Working On</option>
+                    <option value="Awaiting for Parts / Repairs">Awaiting for Parts / Repairs</option>
+                    <option value="Pending for Observation">Pending for Observation</option>
+                    <option value="Resolved">Resolved</option>
+                {% else %}
+                    <option value="In Progress">In Progress</option>
+                    <option value="Resolved">Resolved</option>
+                    <option value="Closed">Closed</option>
+                {% endif %}
             </select>
 
             <input type="submit" value="Add Update">

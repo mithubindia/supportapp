@@ -42,6 +42,13 @@
         <input type="submit" value="Generate Report">
     </form>
 
+    <form method="post" action="{{ url_for('export_reports') }}">
+        {% for key, value in filters.items() %}
+            <input type="hidden" name="{{ key }}" value="{{ value }}">
+        {% endfor %}
+        <button type="submit">Export to Excel</button>
+    </form>
+
     <hr>
 
     <h3>Report Results ({{ tickets|length }} tickets found)</h3>

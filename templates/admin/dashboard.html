@@ -1,7 +1,34 @@
 {% extends 'admin/base.html' %}
 
 {% block admin_content %}
-    <h1>Admin Dashboard - All Tickets</h1>
+    <h1>Admin Dashboard</h1>
+
+    <div class="stats">
+        <h2>Live Status</h2>
+        <p>Total Support Request Received: {{ stats.total }}</p>
+        <p>Approved by Us: {{ stats.approved }}</p>
+        <p>Tickets Pending: {{ stats.pending }}</p>
+        <p>Tickets Resolved: {{ stats.resolved }}</p>
+        <p>Tickets Closed: {{ stats.closed }}</p>
+    </div>
+
+    <hr>
+
+    <div class="filters">
+        <form method="get" action="{{ url_for('admin_dashboard') }}">
+            <label for="agent_id">Filter by Agent:</label>
+            <select name="agent_id" id="agent_id" onchange="this.form.submit()">
+                <option value="">All Agents</option>
+                {% for agent in agents %}
+                    <option value="{{ agent.id }}" {% if selected_agent|int == agent.id %}selected{% endif %}>{{ agent.email }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    <hr>
+
+    <h2>All Tickets</h2>
     <table>
         <thead>
             <tr>

@@ -1,0 +1,28 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}SMTP Settings{% endblock %}
+
+{% block content %}
+    <h1>SMTP Settings</h1>
+    <form method="post">
+        <label for="from_address">From Email Address</label>
+        <input type="email" name="from_address" id="from_address" value="{{ settings.from_address if settings else '' }}" required>
+
+        <label for="smtp_server">SMTP Server</label>
+        <input type="text" name="smtp_server" id="smtp_server" value="{{ settings.smtp_server if settings else '' }}" required>
+
+        <label for="smtp_port">SMTP Port</label>
+        <input type="number" name="smtp_port" id="smtp_port" value="{{ settings.smtp_port if settings else '' }}" required>
+
+        <label for="use_tls">Use TLS/SSL</label>
+        <input type="checkbox" name="use_tls" id="use_tls" {% if settings and settings.use_tls %}checked{% endif %}>
+
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username" value="{{ settings.username if settings else '' }}" required>
+
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" value="{{ settings.password if settings else '' }}" required>
+
+        <input type="submit" value="Save Settings">
+    </form>
+{% endblock %}
