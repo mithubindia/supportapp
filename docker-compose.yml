@@ -6,6 +6,19 @@ services:
       - "5000:5000"
     volumes:
       - .:/app
-      - support_db:/app/instance
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=support_db
+    depends_on:
+      - db
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=support_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
 volumes:
-  support_db:
+  postgres_data:
