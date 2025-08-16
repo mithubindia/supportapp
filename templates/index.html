@@ -3,10 +3,22 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-    <h1>Welcome to the IT Support System</h1>
+    <div class="homepage-welcome">
+        <img src="https://www.svgrepo.com/show/192522/customer-service-support.svg" alt="Customer Support Graphic" width="150">
+        <h1>Welcome to Ticket Tracking Application.</h1>
+    </div>
+
+    <div class="homepage-info">
+        <p>This app is to enable you log support request / raise a support ticket.</p>
+        <p>To do this, you need to register in the application by giving correct email address.</p>
+        <p>Once the the support ticket is raised, at the backend - ticket will be verified its eligibility.</p>
+        <p>Only after that the necessary action will be taken.</p>
+    </div>
+
+    <hr>
+
     {% if g.user %}
         <p>You are logged in as {{ g.user.email }}.</p>
-        {# These links will be implemented in later steps #}
         <p><a href="{{ url_for('create_ticket') }}">Create a new support ticket</a></p>
         <p><a href="{{ url_for('view_tickets') }}">View your tickets</a></p>
     {% else %}

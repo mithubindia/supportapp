@@ -3,3 +3,4 @@ Flask-SQLAlchemy
 Flask-Mail
 pandas
 openpyxl
+Flask-Captcha

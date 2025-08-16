@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, g, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
+from flask_captcha import Captcha
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 import functools
@@ -17,6 +18,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///support.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'a-secret-key-that-you-should-change' # This will be used for session management
 app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['CAPTCHA_CONFIG'] = {'SECRET_CAPTCHA_KEY': 'your-secret-key'}
 
 # Flask-Mail configuration
 app.config['MAIL_SERVER'] = ''
@@ -28,6 +30,7 @@ app.config['MAIL_DEFAULT_SENDER'] = ''
 
 mail = Mail(app)
 db = SQLAlchemy(app)
+captcha = Captcha(app)
 
 # --- Database Models ---
 
@@ -37,6 +40,7 @@ class Role(db.Model):
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), nullable=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255))
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)
@@ -141,7 +145,9 @@ def register():
         password = request.form['password']
         error = None
 
-        if not email:
+        if not captcha.validate():
+            error = 'Invalid captcha.'
+        elif not email:
             error = 'Email is required.'
         elif not password:
             error = 'Password is required.'
@@ -176,7 +182,9 @@ def login():
         error = None
         user = User.query.filter_by(email=email).first()
 
-        if user is None:
+        if not captcha.validate():
+            error = 'Invalid captcha.'
+        elif user is None:
             error = 'Incorrect email or password.'
         elif not user.check_password(password):
             error = 'Incorrect email or password.'
@@ -360,11 +368,14 @@ def manage_agents():
 @app.route('/admin/add_agent', methods=['POST'])
 @admin_required
 def add_agent():
+    name = request.form['name']
     email = request.form['email']
     password = request.form['password']
     error = None
 
-    if not email:
+    if not name:
+        error = 'Name is required.'
+    elif not email:
         error = 'Email is required.'
     elif not password:
         error = 'Password is required.'
@@ -377,7 +388,7 @@ def add_agent():
             flash("Agent role not found. Please contact an administrator.", "danger")
             return redirect(url_for('manage_agents'))
 
-        new_agent = User(email=email, role=agent_role)
+        new_agent = User(name=name, email=email, role=agent_role)
         new_agent.set_password(password)
         db.session.add(new_agent)
         db.session.commit()
@@ -653,6 +664,10 @@ def export_reports():
         query = query.filter(Ticket.user_id == int(user_id))
 
     filtered_tickets = query.order_by(Ticket.created_at.desc()).all()
+
+    if not filtered_tickets:
+        flash("Nil data, no report.", "warning")
+        return redirect(url_for('reports'))
 
     data = []
     for ticket in filtered_tickets:

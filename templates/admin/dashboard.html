@@ -3,13 +3,18 @@
 {% block admin_content %}
     <h1>Admin Dashboard</h1>
 
-    <div class="stats">
-        <h2>Live Status</h2>
-        <p>Total Support Request Received: {{ stats.total }}</p>
-        <p>Approved by Us: {{ stats.approved }}</p>
-        <p>Tickets Pending: {{ stats.pending }}</p>
-        <p>Tickets Resolved: {{ stats.resolved }}</p>
-        <p>Tickets Closed: {{ stats.closed }}</p>
+    <div class="dashboard-grid">
+        <div class="stats">
+            <h2>Live Status</h2>
+            <p>Total Support Request Received: {{ stats.total }}</p>
+            <p>Approved by Us: {{ stats.approved }}</p>
+            <p>Tickets Pending: {{ stats.pending }}</p>
+            <p>Tickets Resolved: {{ stats.resolved }}</p>
+            <p>Tickets Closed: {{ stats.closed }}</p>
+        </div>
+        <div class="chart-container">
+            <canvas id="ticketStatusChart"></canvas>
+        </div>
     </div>
 
     <hr>
@@ -68,4 +73,39 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('ticketStatusChart');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Approved', 'Pending', 'Resolved', 'Closed'],
+                datasets: [{
+                    label: '# of Tickets',
+                    data: [{{ stats.approved }}, {{ stats.pending }}, {{ stats.resolved }}, {{ stats.closed }}],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+    <style>
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        .chart-container {
+            position: relative;
+            height: 40vh;
+            width: 80vw;
+        }
+    </style>
 {% endblock %}

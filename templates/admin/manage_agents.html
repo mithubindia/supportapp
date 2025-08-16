@@ -6,6 +6,9 @@
     <h1>Manage Agents</h1>
     <h2>Add New Agent</h2>
     <form method="post" action="{{ url_for('add_agent') }}">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name" required>
+
         <label for="email">Email</label>
         <input type="email" name="email" id="email" required>
 
@@ -21,6 +24,7 @@
     <table>
         <thead>
             <tr>
+                <th>Name</th>
                 <th>Email</th>
                 <th>Actions</th>
             </tr>
@@ -28,6 +32,7 @@
         <tbody>
             {% for agent in agents %}
                 <tr>
+                    <td>{{ agent.name }}</td>
                     <td>{{ agent.email }}</td>
                     <td>
                         <form method="post" action="{{ url_for('delete_agent', user_id=agent.id) }}" style="display:inline;">

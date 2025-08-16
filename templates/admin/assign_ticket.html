@@ -11,7 +11,7 @@
             <option value="">-- Select Staff --</option>
             {% for user in staff_users %}
                 <option value="{{ user.id }}" {% if ticket.assigned_to_id == user.id %}selected{% endif %}>
-                    {{ user.email }}
+                    {{ user.name }} ({{ user.email }})
                 </option>
             {% endfor %}
         </select>
