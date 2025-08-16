@@ -8,3 +8,16 @@ The application includes the following features:
 - A clean, styled user interface.
 
 The application is configured to use SQLite for portability but can be easily switched to PostgreSQL by changing the database URI in the configuration.
+
+## Running with Docker
+
+To run the application using Docker, make sure you have Docker and Docker Compose installed. Then, follow these steps:
+
+1.  **Build and run the container:**
+    ```bash
+    docker-compose up --build
+    ```
+2.  **Access the application:**
+    Open your web browser and go to `http://localhost:5000`.
+
+The application will be running in a Docker container, and the database will be persisted in a Docker volume named `support_db`.
