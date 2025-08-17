@@ -3,4 +3,5 @@ Flask-SQLAlchemy
 Flask-Mail
 pandas
 openpyxl
-Flask-Captcha
+flask-session-captcha
+Flask-Sessionstore

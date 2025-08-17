@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, g, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
-from flask_captcha import Captcha
+from flask_sessionstore import Session
+from flask_session_captcha import FlaskSessionCaptcha
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 import functools
@@ -18,7 +19,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///support.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'a-secret-key-that-you-should-change' # This will be used for session management
 app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['CAPTCHA_CONFIG'] = {'SECRET_CAPTCHA_KEY': 'your-secret-key'}
+app.config['CAPTCHA_ENABLE'] = True
+app.config['CAPTCHA_LENGTH'] = 5
+app.config['CAPTCHA_WIDTH'] = 160
+app.config['CAPTCHA_HEIGHT'] = 60
+app.config['SESSION_TYPE'] = 'sqlalchemy'
+
 
 # Flask-Mail configuration
 app.config['MAIL_SERVER'] = ''
@@ -30,7 +36,9 @@ app.config['MAIL_DEFAULT_SENDER'] = ''
 
 mail = Mail(app)
 db = SQLAlchemy(app)
-captcha = Captcha(app)
+app.config['SESSION_SQLALCHEMY'] = db
+sess = Session(app)
+captcha = FlaskSessionCaptcha(app)
 
 # --- Database Models ---
 
@@ -141,6 +149,10 @@ def register():
     if g.user:
         return redirect(url_for('index'))
     if request.method == 'POST':
+        if not captcha.validate():
+            flash("Invalid captcha.", "danger")
+            return redirect(url_for('register'))
+
         email = request.form['email']
         password = request.form['password']
         error = None
@@ -177,14 +189,16 @@ def login():
     if g.user:
         return redirect(url_for('index'))
     if request.method == 'POST':
+        if not captcha.validate():
+            flash("Invalid captcha.", "danger")
+            return redirect(url_for('login'))
+
         email = request.form['email']
         password = request.form['password']
         error = None
         user = User.query.filter_by(email=email).first()
 
-        if not captcha.validate():
-            error = 'Invalid captcha.'
-        elif user is None:
+        if user is None:
             error = 'Incorrect email or password.'
         elif not user.check_password(password):
             error = 'Incorrect email or password.'
